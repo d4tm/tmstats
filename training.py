@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import sys, re, xlsxwriter
 import dbconn, tmutil, sys, os
+from simpleclub import Club
 from datetime import datetime
 headers = "Div,Area,Club Name,Number,Status,Trained,Pres,VPE,VPM,VPPR,Sec,Treas,SAA"
 sheets = {}
@@ -121,6 +122,7 @@ if __name__ == "__main__":
     curs = conn.cursor()
     
     # Your main program begins here.
+    clubs = Club.getClubsOn(curs)
     
     if parms.require9a:
         # Find the clubs which qualified in round 1
@@ -153,11 +155,12 @@ if __name__ == "__main__":
                     parts = t.select('td')
                     clubname = ''.join(parts[1].stripped_strings)
                     clubstatus = ''.join(parts[2].stripped_strings)
-                    clubnumber = int(''.join(parts[3].stripped_strings))
+                    clubnumber = ''.join(parts[3].stripped_strings)
                     # Omit suspended clubs
                     if clubstatus == 'S':
                         continue
-                    row = [division, area, clubname, clubnumber, clubstatus]
+                    club = clubs[clubnumber]
+                    row = [club.division, club.area, clubname, clubnumber, clubstatus]
                     offlist = []
                     trained = 0
                     for o in t.select('input[type="checkbox"]'):
@@ -169,15 +172,6 @@ if __name__ == "__main__":
                     row.append(trained)
                     row.extend(offlist)
                     results.append(row)                
-            else:
-                contents = ' '.join(t.stripped_strings)
-                match = finder.match(contents)
-                if match:
-                    area = match.group(1).strip()
-                    division = match.group(2).strip()
-                    if area == '0A':
-                        division = '0D'
-
     # Now, create the HTML result file and the matching Excel spreadsheet
     results.sort(key=lambda x:(x[0], x[1], x[3]))
     print 'results is %d long' % len(results)
