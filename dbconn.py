@@ -10,14 +10,14 @@ class Singleton(object):
         return type._the_instance
     
 class dbconn(Singleton):
-    def __init__(self, dbhost='localhost', dbuser=None, dbpass=None, dbname=None):
+    def __init__(self, dbhost='127.0.0.1', dbuser=None, dbpass=None, dbname=None):
         if self.__dict__.get('conn', False):
             return
-        self.dbhost = dbhost 
+        self.dbhost = '127.0.0.1'
         self.dbuser = dbuser
         self.dbpass = dbpass
         self.dbname = dbname
-        #print "Connecting to %s %s with pw %s db %s" % (self.host, self.dbuser, self.dbpassword, self.dbname)
+        print "Connecting to %s %s with pw %s db %s" % (self.dbhost, self.dbuser, self.dbpass, self.dbname)
         self.conn = mysql.connect(self.dbhost, self.dbuser, self.dbpass, self.dbname, use_unicode=True, charset='UTF8')
         
     def cursor(self):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         os.chdir(os.path.join(os.environ['TM_DIRECTORY'],'data'))
     parms = tmparms.tmparms()
     parms.parse()
-    #print 'Connecting to %s:%s as %s' % (parms.dbhost, parms.dbname, parms.dbuser)
+    print 'Connecting to %s:%s as %s' % (parms.dbhost, parms.dbname, parms.dbuser)
     conn = dbconn(parms.dbhost, parms.dbuser, parms.dbpass, parms.dbname)
  
     c = conn.cursor()

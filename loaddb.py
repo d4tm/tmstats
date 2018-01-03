@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """ Load the performance information already gathered into a database. 
     Run from the directory containing the YML file for parms and the CSV files 
-       (but in TextMate, run from the source directory).
     Return code:
        0 if changes were made to the database
        1 if no changes were made """
@@ -10,6 +9,8 @@ import csv, dbconn, sys, os, glob
 from simpleclub import Club
 from tmutil import cleandate
 import geocode
+import tmparms, tmglobals
+globals = tmglobals.tmglobals()
 
 # Global variable to see how many entries got changed.  All we really care about is zero/nonzero.
 global changecount
@@ -141,6 +142,7 @@ def doHistoricalClubs(conn, mapkey):
         doDailyClubs(infile, conn, cdate, firsttime)
         firsttime = False
         infile.close()
+        conn.commit()
     
     # Commit all changes    
     conn.commit()
@@ -148,7 +150,7 @@ def doHistoricalClubs(conn, mapkey):
     # And update the GEO table if necessary
     curs.execute('SELECT MAX(lastdate) FROM clubs')
     lastdate = curs.fetchone()[0]
-    curs.execute('SELECT c.clubnumber FROM clubs c INNER JOIN geo g ON g.clubnumber = c.clubnumber AND (c.address != g.address OR c.city != g.city OR c.state != g.state OR c.zip != g.zip OR c.country != g.country OR c.latitude != g.whqlatitude OR c.longitude != g.whqlongitude) WHERE lastdate = %s', (lastdate,))
+    curs.execute('SELECT c.clubnumber FROM clubs c INNER JOIN geo g ON g.clubnumber = c.clubnumber AND (c.address != g.address OR c.city != g.city OR c.state != g.state OR c.zip != g.zip OR c.country != g.country OR (c.latitude != c.longitude AND (c.latitude != g.whqlatitude OR c.longitude != g.whqlongitude))) WHERE lastdate = %s', (lastdate,))
     clubstoupdate = ['%d' % c[0] for c in curs.fetchall()]
     # And get new clubs, too
     curs.execute('SELECT clubnumber FROM clubs WHERE lastdate = %s AND clubnumber NOT IN (SELECT clubnumber FROM geo)', (lastdate,))
@@ -176,6 +178,11 @@ def doDailyClubs(infile, conn, cdate, firsttime=False):
         if not hline[0].startswith('{"Message"'):
             print "'clubnumber' not in '%s'" % hline
         return
+        
+    try:
+        prospectiveclubcol = headers.index('prospectiveclub')
+    except ValueError:
+        prospectiveclubcol = False
         
     # Find out what fields we have in the database itself
     dbfields = []
@@ -220,16 +227,17 @@ def doDailyClubs(infile, conn, cdate, firsttime=False):
         
     Club.setfieldnames(dbheaders)
 
-    
     # We need to get clubs for the most recent update so we know whether to update an entry 
     #   or start a new one.
-    #yesterday = datetime.strftime(datetime.strptime(cdate, '%Y-%m-%d') - timedelta(1),'%Y-%m-%d')
-    clubhist = Club.getClubsOn(curs)
+    yesterday = datetime.strftime(datetime.strptime(cdate, '%Y-%m-%d') - timedelta(1),'%Y-%m-%d')
+    clubhist = Club.getClubsOn(curs, date=yesterday)
    
     for row in reader:
         if len(row) < expectedheaderscount:
             break     # we're finished
-            
+        if prospectiveclubcol is not None and row[prospectiveclubcol]:
+            continue   # Ignore prospective clubs
+
         for i in suppress:
             del row[i]
 
@@ -293,7 +301,7 @@ def doDailyClubs(infile, conn, cdate, firsttime=False):
 
         
         # If a club is partially unassigned, mark it as completely unassigned.
-        if (club.area == '0A') or (club.division == '0D'):
+        if (club.area == '0A') or (club.area == '0D') or (club.division == '0D') or (club.division == '0A'):
             club.area = '0A'
             club.division = '0D'
 
@@ -304,6 +312,9 @@ def doDailyClubs(infile, conn, cdate, firsttime=False):
     
         # Clean up advanced status
         club.advanced = '1' if (club.advanced != '') else '0'
+        
+        # Clean up online status
+        club.allowsonlineattendance = '1' if (club.allowsonlineattendance != '') else '0'
     
         # Now, take care of missing latitude/longitude
         if ('latitude') in dbheaders:
@@ -321,6 +332,12 @@ def doDailyClubs(infile, conn, cdate, firsttime=False):
                club.longitude = 0.0
         else:
            club.longitude = 0.0
+           
+        # Sometimes, Toastmasters gets the latitude and longitude backwards
+        # If that turns out to create an impossible location (which it will in California),
+        #    let's swap them.
+        if abs(club.latitude) > 90.0:
+            (club.latitude, club.longitude) = (club.longitude, club.latitude)
 
         # And put it into the database if need be
         if club.clubnumber in clubhist:
@@ -666,21 +683,16 @@ def doDailyAreaPerformance(infile, conn, cdate, monthstart):
     conn.commit()
  
 if __name__ == "__main__":
- 
-    import tmparms
-    # Make it easy to run under TextMate
-    if 'TM_DIRECTORY' in os.environ:
-        os.chdir(os.path.join(os.environ['TM_DIRECTORY'],'data'))
-        
-    reload(sys).setdefaultencoding('utf8')
-    
+
     # Handle parameters
     parms = tmparms.tmparms()
     parms.add_argument('--quiet', '-q', action='count')
-    parms.parse() 
+    
+    # Do global setup
+    globals.setup(parms)
+    conn = globals.conn
 
         
-    conn = dbconn.dbconn(parms.dbhost, parms.dbuser, parms.dbpass, parms.dbname)
         
     inform("Processing Clubs", supress=1)
     doHistoricalClubs(conn, parms.googlemapsapikey)
