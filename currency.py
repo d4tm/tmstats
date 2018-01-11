@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """ Check currency of all four tables for the date specified.
-    If no date is specified, we want the 'clubs' table to be current for today;
-      the other tables can be for today OR yesterday because they are one day behind on Toastmasters.
+    If no date, either today or yesterday is OK.
 
     Return 0 if all four tables are current.
     Return 1 if only the clubs table is outdated.
@@ -10,8 +9,11 @@
     Uses the 'loaded' table.
     
 """
-import tmparms, dbconn, argparse, os, sys, tmutil
+import tmparms, os, sys, tmutil
 from datetime import datetime, timedelta
+
+import tmglobals
+globals = tmglobals.tmglobals()
 
 
 if 'TM_DIRECTORY' in os.environ:
@@ -25,11 +27,13 @@ yesterday = today - timedelta(1)
 today = today.strftime('%Y-%m-%d')
 yesterday = yesterday.strftime('%Y-%m-%d')
 parms.parser.add_argument("--date", dest='date', default=None)
-parms.parse()
+
+# Do global setup
+globals.setup(parms)
+conn = globals.conn
+curs = globals.curs
 
 
-conn = dbconn.dbconn(parms.dbhost, parms.dbuser, parms.dbpass, parms.dbname)
-curs = conn.cursor()
 date = parms.date
 have = {}
 want = ['clubs', 'clubperf', 'distperf', 'areaperf']
@@ -44,11 +48,7 @@ if date:
         have[x[0]] = True
         count += 1
 else:
-    curs.execute("SELECT tablename FROM loaded WHERE (loadedfor=%s OR loadedfor=%s) AND tablename IN ('clubperf', 'distperf', 'areaperf') GROUP BY tablename", (today, yesterday))
-    for x in curs.fetchall():
-        have[x[0]] = True
-        count += 1
-    curs.execute("SELECT tablename FROM loaded WHERE loadedfor=%s AND tablename = 'clubs'", (today,))
+    curs.execute("SELECT tablename FROM loaded WHERE (loadedfor=%s OR loadedfor=%s) AND tablename IN ('clubperf', 'distperf', 'areaperf', 'clubs') GROUP BY tablename", (today, yesterday))
     for x in curs.fetchall():
         have[x[0]] = True
         count += 1

@@ -77,6 +77,10 @@ if [[ "$dorun" = "yes" ]] ; then
     
     echo "Updateit RC = $urc"
 
+    echo "haveclubs = $haveclubs"
+    echo "haveperf = $haveperf"
+    echo "changed = $changed"
+    echo "haveboth = $haveboth"
     
   
     if (( $changed != 0 )) && [[ "$force" = "" ]]    ; then
