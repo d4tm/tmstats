@@ -136,8 +136,10 @@ def makemap(outfile, clubs, parms):
         if club.division != '0D':
             if club.division not in boundsByDivision:
                 boundsByDivision[club.division] = Bounds()
-            boundsByDivision[club.division].extend(club.latitude, club.longitude)
-        districtBounds.extend(club.latitude, club.longitude)
+            if club.latitude>=36: # add by Tomer - dont let bad coords mess up the zoom extents
+	    	boundsByDivision[club.division].extend(club.latitude, club.longitude)
+        if club.latitude>=36: #add by tomer - dont let bad coords mess up the zoom extents. 
+		districtBounds.extend(club.latitude, club.longitude)
         clubsByLocation[club.coords].append(club)
 
 
