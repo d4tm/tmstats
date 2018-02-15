@@ -192,7 +192,7 @@ def updateclubstocurrent(conn, clubs, apikey):
        
     for (clubnumber, clubname, place, address, city, state, zip, country, whqlatitude, whqlongitude)  in c.fetchall():
         print (clubnumber, clubname)
-#TOMER         print (address, city, state, zip)
+#TOMER        print (address, city, state, zip) has a unicode error so no need for now. debug only anyway
         gres = gmaps.geocode("%s, %s, %s %s" % (address, city, state, zip))
         pprint.pprint(gres)
         print ("=================")
