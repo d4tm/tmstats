@@ -8,6 +8,11 @@ from tmutil import overrideClubs, removeSuspendedClubs
 from overridepositions import overrideClubPositions
 
 
+def removeHttp(url):
+    newurl=url.replace("http://","")
+    newurl=newurl.replace("https://","") #in case it is https
+    return newurl
+
 def inform(*args, **kwargs):
     """ Print information to 'file', depending on the verbosity level.
         'level' is the minimum verbosity level at which this message will be printed. """
@@ -44,9 +49,9 @@ def makeCard(club):
     data['meetingtime'] = club.meetingtime.replace(' ','&nbsp;')
     data['contact'] = []
     if club.clubwebsite:
-        data['contact'].append('<a href="http://%s" target="_blank">Website</a>' % (club.clubwebsite))
+        data['contact'].append('<a href="http://%s" target="_blank">Website</a>' % (removeHttp(club.clubwebsite)))
     if club.facebook:
-        data['contact'].append('<a href="http://%s" target="_blank">Facebook</a>' % (club.facebook))
+        data['contact'].append('<a href="http://%s" target="_blank">Facebook</a>' % (removeHttp(club.facebook)))
     if club.clubemail:
         data['contact'].append('<a href="mailto:%s" target="_blank">Email</a>' % (club.clubemail))
     if club.phone:
