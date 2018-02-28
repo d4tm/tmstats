@@ -104,6 +104,11 @@ narrowtemplate = """
 
 # Helper functions
 
+def removeHttp(url):
+    newurl=url.replace("http://","")
+    newurl=newurl.replace("https://","") #in case it is https
+    return newurl
+
 
 def normalize(s):
     if s:
@@ -188,11 +193,11 @@ for city in sorted(cities.keys()):
         data['meetingtime'] = club.meetingtime.replace(' ','&nbsp;')
         data['contact'] = []
         if club.clubwebsite: 
-            data['contact'].append('<a href="http://%s" target="_blank">Website</a>' % (club.clubwebsite))
+            data['contact'].append('<a href="http://%s" target="_blank">Website</a>' % (removeHttp(club.clubwebsite)))
         if club.facebook:
-            data['contact'].append('<a href="http://%s" target="_blank">Facebook</a>' % (club.facebook))
+            data['contact'].append('<a href="http://%s" target="_blank">Facebook</a>' % (removeHttp(club.facebook)))
         if club.clubemail:
-            data['contact'].append('<a href="mailto:%s" target="_blank">Email</a>' % (club.clubemail))
+            data['contact'].append('<a href="mailto:%s" target="_blank">Email</a>' % (removeHttp(club.clubemail)))
         if club.phone:
             data['contact'].append('Phone: %s' % (club.phone))
         data['lcontact'] = '<br />'.join(data['contact'])
