@@ -17,7 +17,7 @@ class dbconn(Singleton):
         self.dbuser = dbuser
         self.dbpass = dbpass
         self.dbname = dbname
-        print "Connecting to %s %s with pw %s db %s" % (self.dbhost, self.dbuser, self.dbpass, self.dbname)
+#        print "Connecting to %s %s with pw %s db %s" % (self.dbhost, self.dbuser, self.dbpass, self.dbname)
         self.conn = mysql.connect(self.dbhost, self.dbuser, self.dbpass, self.dbname, use_unicode=True, charset='UTF8')
         
     def cursor(self):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         os.chdir(os.path.join(os.environ['TM_DIRECTORY'],'data'))
     parms = tmparms.tmparms()
     parms.parse()
-    print 'Connecting to %s:%s as %s' % (parms.dbhost, parms.dbname, parms.dbuser)
+#    print 'Connecting to %s:%s as %s' % (parms.dbhost, parms.dbname, parms.dbuser)
     conn = dbconn(parms.dbhost, parms.dbuser, parms.dbpass, parms.dbname)
  
     c = conn.cursor()
