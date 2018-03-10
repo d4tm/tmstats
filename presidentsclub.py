@@ -52,7 +52,7 @@ if __name__ == "__main__":
     
     # Get the qualifying clubs
     
-    curs.execute("SELECT clubnumber, clubname, asof, goalsmet, division, area FROM clubperf where goalsmet >= 9 and asof = %s and memduesontimeapr >= 1 and (activemembers >= 20 or activemembers - membase >= 5)", (targetdate,))
+    curs.execute("SELECT clubnumber, clubname, asof, goalsmet, division, area FROM clubperf where goalsmet >= 9 and asof = %s and (activemembers >= 20 or activemembers - membase >= 5)", (targetdate,))
  
     status = "final" if final else "updated daily"
 
