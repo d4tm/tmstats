@@ -162,7 +162,9 @@ if __name__ == "__main__":
     curs.execute("SELECT COUNT(DISTINCT membername) FROM awards WHERE " + ' AND '.join(clauses))
     count = curs.fetchone()[0]
 
-    curs.execute("SELECT membername, award, clubname, awarddate FROM awards WHERE " + ' AND '.join(clauses))
+#I added this group by here, because there is a wierd bug in the update from tm that causes certain awards to be duplicated. This group by removes the duplicate. The duplication is such that a record with same membername,award,clubname,and awarddate appears more than once and that screws up the printout. So this group BY below i added resolves it. its a bandaid but its one that can work well. Actual fix is to see in the code that updates the awards table, why this duplication is inserted
+
+    curs.execute("SELECT membername, award, clubname, awarddate FROM awards WHERE " + ' AND '.join(clauses) + "group BY membername,award,clubname,awarddate")
     for (membername, award, clubname, awarddate) in curs.fetchall():
         Award(membername, award, clubname, awarddate)
 
