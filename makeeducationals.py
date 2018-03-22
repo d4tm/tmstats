@@ -164,7 +164,7 @@ if __name__ == "__main__":
         
 
             
-    print '<h3>Member Educationals %s</h3>' % timestamp
+    print '<h3>Member Legacy C&L Educationals %s</h3>' % timestamp
     print '<p>Congratulations to the following Toastmasters for reaching one or more of their educational goals %s.  Will we see YOUR name here next?</p>' % timestamp
     print '<p>Achievements not shown here can be found on the Toastmasters International'
     print '<a href="http://reports.toastmasters.org/reports/dprReports.cfm?r=3&d=%s&s=Date&sortOrder=1" target="_new">Educational Achievements Report</a>.</p>' % (parms.district)

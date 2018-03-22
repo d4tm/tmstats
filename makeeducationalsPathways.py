@@ -18,7 +18,7 @@ awardorder = ['DTM', 1, 'CL', 'CC', 2, 'ALB', 'ACB', 3, 'ALS', 'ACS', 4, 'ACG', 
 
 class Award:
     def __init__(self, membername, award, clubname, awarddate):
-        self.membername = membername
+	self.membername = membername
         self.award = award
         self.level = Awardinfo.levels[award]
         self.clubname = clubname
@@ -36,24 +36,13 @@ class Award:
  
 
     def show(self):
-        if self.level == 0:
-            return u'<tr class="awardline"><td class="awardmember" width="48%%">'+ unicode(self.membername) +u'</td><td class="awardclub" width="48%">' + unicode(self.clubname) + u'</td></tr>' 
-        else:
-            return u'<tr class="awardline"><td class="awardmember" width="35%%">'+ unicode(self.membername) +u'</td><td class="awardclub" width="35%">' + unicode(self.clubname) + u'</td><td class="pathname" width="25%">' + Awardinfo.paths[self.award] + u'</td></tr>' 
+        return u'<tr><td>'+ unicode(self.membername) +u'</td><td>' + unicode(self.clubname) + u'</td><td>'+ unicode(Awardinfo.paths[self.award])+'</td></tr>' 
 
 def printawards(awards, knownawards, k):
     if k in awards:
-        if isinstance(k, int):
-            print '[et_pb_toggle title="Pathways Level %d (%d)" open="off" use_border_color="off" border_color="#ffffff" border_style="solid" open_toggle_text_color="#000000" closed_toggle_text_color="#000001"]' % (k, len(awards[k]))
-        else:
-            print '[et_pb_toggle title="%s (%d)" open="off" use_border_color="off" border_color="#ffffff" border_style="solid" open_toggle_text_color="#000000" closed_toggle_text_color="#000001"]' % (knownawards[k], len(awards[k]))
-        print '<table>'
-        #print '<tr><td class="awardname" colspan="2">%s</td></tr>' % knownawards[k]
+        print '<tr><td class="pathawardname" colspan="3">Level %d Awards</td></tr>' % k    
         for each in sorted(awards[k], key=lambda x:x.key):
             print each.show()
-        print '</table>'
-        print '[/et_pb_toggle]'
-
 
 def makeCongratulations(count, district, timing, parms):
     # Now, create the "Congratulations" slide
@@ -157,6 +146,69 @@ if __name__ == "__main__":
     clauses.append('award!="ALS"')
     clauses.append('award!="ACS"')
     clauses.append('award!="ACG"')
+    
+    #remove new pathway award designation (not sure this will work long term)
+    clauses.append('award!="EC1"')
+    clauses.append('award!="EC2"')
+    clauses.append('award!="EC3"')
+    clauses.append('award!="EC4"')
+    clauses.append('award!="EC5"')
+    
+    clauses.append('award!="LD1"')
+    clauses.append('award!="LD2"')
+    clauses.append('award!="LD3"')
+    clauses.append('award!="LD4"')
+    clauses.append('award!="LD5"')
+    
+    clauses.append('award!="PI1"')
+    clauses.append('award!="PI2"')
+    clauses.append('award!="PI3"')
+    clauses.append('award!="PI4"')
+    clauses.append('award!="PI5"')
+   
+    clauses.append('award!="PM1"')
+    clauses.append('award!="PM2"')
+    clauses.append('award!="PM3"')
+    clauses.append('award!="PM4"')
+    clauses.append('award!="PM5"')
+    
+    clauses.append('award!="SR1"')
+    clauses.append('award!="SR2"')
+    clauses.append('award!="SR3"')
+    clauses.append('award!="SR4"')
+    clauses.append('award!="SR5"')
+
+
+    clauses.append('award!="TC1"')
+    clauses.append('award!="TC2"')
+    clauses.append('award!="TC3"')
+    clauses.append('award!="TC4"')
+    clauses.append('award!="TC5"')
+
+    clauses.append('award!="DL1"')
+    clauses.append('award!="DL2"')
+    clauses.append('award!="DL3"')
+    clauses.append('award!="DL4"')
+    clauses.append('award!="DL5"')
+
+    clauses.append('award!="MS1"')
+    clauses.append('award!="MS2"')
+    clauses.append('award!="MS3"')
+    clauses.append('award!="MS4"')
+    clauses.append('award!="MS5"')
+
+    clauses.append('award!="IP1"')
+    clauses.append('award!="IP2"')
+    clauses.append('award!="IP3"')
+    clauses.append('award!="IP4"')
+    clauses.append('award!="IP5"')
+
+    clauses.append('award!="VC1"')
+    clauses.append('award!="VC2"')
+    clauses.append('award!="VC3"')
+    clauses.append('award!="VC4"')
+    clauses.append('award!="VC5"')
+
     clauses.append('award!="DTM"')
 
     curs.execute("SELECT COUNT(DISTINCT membername) FROM awards WHERE " + ' AND '.join(clauses))
@@ -170,17 +222,14 @@ if __name__ == "__main__":
 
 
 
-    print '<h3>Member Educationals %s</h3>' % timestamp
-    print '<p>Congratulations to the following Toastmasters for reaching one or more of their educational goals %s.  Will we see YOUR name here next?</p>' % timestamp
-    print '<p>Achievements not shown here can be found on the Toastmasters International <a href="http://reports.toastmasters.org/reports/dprReports.cfm?r=3&d=%s&s=Date&sortOrder=1" target="_new">Educational Achievements Report</a>.</p>' % (parms.district)
-    print '<p>Click on an award title to show the names of Toastmasters who have earned that award.</p>'
+    print '<p style="color: #772432; font-size: 18pt;"><strong>Pathways Awards %s</strong></p>' % timestamp
 
     # And now print the awards themselves.
 
-    print '<div class="awardstable">'
+    print '<table style="width: 100%;">\n<tbody>\n'
     for k in awardorder:
         printawards(awards, knownawards, k)
-    print '</div>'
+    print '</tbody>\n</table>\n'
 
 
     cmd = makeCongratulations(count, parms.district, timestamp, parms)
