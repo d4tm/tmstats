@@ -21,13 +21,13 @@ class Awardinfo:
                           'Visionary Communication'}
                          
                          
-        # The names of the awards for paths are derived from the path name:
-        #  First three letters of the first two words in the path (uppercased)
-        #  Followed by "L" and the level number.
+        # (new format of pathways awards):The names of the awards for paths are derived from the path name:
+        #  First letter of the first two words in the path (uppercased)
+        #  Followed by the level number.
         #  Compute them all to reduce typing.
         pathids = {}
         for p in pathnames:
-            id = ''.join([s[0:3].upper() for s in p.split()[:2]])
+            id = ''.join([s[0:1].upper() for s in p.split()[:2]])
             pathids[id] = p
         
         levels = {}
@@ -38,7 +38,7 @@ class Awardinfo:
             
         for p in pathids:
             for l in [1, 2, 3, 4, 5]:
-                index = '%sL%d' % (p, l)
+                index = '%s%d' % (p, l)
                 lookup[index] = '%s Level %d' % (pathids[p], l)
                 levels[index] = l
                 paths[index] = pathids[p]
