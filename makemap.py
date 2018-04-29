@@ -217,7 +217,7 @@ def makemap(outfile, clubs, parms):
     outfile.write("$('#nav-head').css({'width':'%dpx','text-align':'center','vertical-align':'middle','height':'%dpx','display':'inline-block'});\n" % (selectwidth, cellheight if oneline else (2*cellheight)))
     aaaprops = standardprops.copy()
     aaaprops['display'] = 'inline-block'
-    aaaprops['height'] = '%dpx' % (cellheight * 2)
+    aaaprops['height'] = '15px'
     aaaprops['vertical-align'] = 'center'
     outfile.write("$('.divdistrict').css(%s);\n" % outputprops(aaaprops, initwidth, 0))
     left = initwidth + celltotal
