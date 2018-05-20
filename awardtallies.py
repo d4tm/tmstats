@@ -50,11 +50,12 @@ if __name__ == "__main__":
             tmyear = today.year
 
 
-    # First, deal with awards by Division
+    # First, deal with awards by Division. Note the creation of the interim awardnoDups, which is a way to eliminate duplicates. Some members show up multiple times for same award, either due to bugs in data import or due to the fact that Tmi changed the award codes for pathways and just appended people with new codes which created dups. either way, this filters them. 
+
     parms.divfile.write('Division,Awards\n')
-    curs.execute("SELECT division, count(*) FROM awards WHERE tmyear = %s AND award != 'LDREXC' GROUP BY division ORDER BY division", (tmyear,))
+    curs.execute("SELECT division, count(*) FROM (SELECT * FROM awards WHERE tmyear = %s AND award != 'LDREXC' GROUP BY membername,awarddate) as awardnoDups GROUP BY division ORDER BY division", (tmyear,))
     for l in curs.fetchall():
-        parms.divfile.write('%s,%d\n' % (l[0].replace(',',';'), l[1]))
+        parms.divfile.write('Division %s,%d\n' % (l[0].replace(',',';'), l[1]))
     parms.divfile.close()
      
     # And then awards by type
