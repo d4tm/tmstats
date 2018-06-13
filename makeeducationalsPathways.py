@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
 
 
-    print '<p style="color: #772432; font-size: 18pt;"><strong>Pathways Awards %s Introduction</strong></p>' % timestamp
+    print '<p style="color: #772432; font-size: 18pt;"><strong>Pathways Awards %s</strong></p>' % timestamp
 
     # And now print the awards themselves.
 

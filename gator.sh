@@ -178,7 +178,7 @@ if [[ "$dorun" = "yes" ]] ; then
         echo "Creating award files"
         ../makeeducationals.py --since 30
         convert "recentawards.jpg" -resize 100x65 "100x65_recentawards.jpg"
-        ../makeeducationalsPathways.py --since 09/19/2017 
+        ../makeeducationalsPathways.py --since 30 
     fi
     
     if (( $haveperf == 0 )) ; then
