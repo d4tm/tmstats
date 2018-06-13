@@ -147,6 +147,11 @@ if [[ "$dorun" = "yes" ]] ; then
     fi
     
     if (( $haveperf == 0 )) ; then
+        echo "Running Lucky 7"
+        ../lucky7.py
+    fi
+
+    if (( $haveperf == 0 )) ; then
         echo "Running September Sanity"
         ../sanity.py
     fi
