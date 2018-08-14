@@ -46,20 +46,21 @@ if today.month < parms.fromend:
         today = today.replace(year=today.year-1)
     except ValueError:  # Today must be Leap Day!
         today = today.replace(year=today.year-1, day=28)
-startmonth = '%d-%0.2d-01' % (today.year, parms.fromend)
-endmonth = '%d-%0.2d-01' % (today.year, parms.toend)
 
 outfile = parms.outfile
 
 # If there's monthly data for the end date, use it; otherwise, use
-#   today's data.
+#   daily data.
 
-curs.execute("SELECT c.clubnumber, c.clubname, c.asof, (c.activemembers - c.membase) - (p.activemembers - p.membase) AS delta, c.division, c.area FROM clubperf c INNER JOIN (SELECT activemembers, membase, clubnumber FROM clubperf WHERE monthstart=%s AND entrytype = 'M') p ON p.clubnumber = c.clubnumber WHERE monthstart=%s AND entrytype = 'M'  HAVING delta >= 5 ORDER BY c.division, c.area" , (startmonth, endmonth))
+#start with monthly data (entrytype=M)
+curs.execute("SELECT clubnumber, clubname, asof, activemembers-membase as delta, division, area FROM clubperf where (monthstart='{0}-08-01' or monthstart='{0}-09-01') and activemembers-membase>=5 and entrytype='M' ORDER BY division, area".format(today.year))
+
 if curs.rowcount:
     final = True
 else:
-    # No data returned; use today's data instead
-    curs.execute("SELECT c.clubnumber, c.clubname, c.asof, (c.activemembers - c.membase) - (p.activemembers - p.membase) AS delta, c.division, c.area FROM clubperf c INNER JOIN (SELECT activemembers, membase, clubnumber FROM clubperf WHERE monthstart=%s AND entrytype = 'M')  p ON p.clubnumber = c.clubnumber WHERE entrytype = 'L'  HAVING delta >= 5 ORDER BY c.division, c.area;",  (startmonth,))
+    # No data returned; use daily data instead (entrytype=L)
+    curs.execute("SELECT clubnumber, clubname, asof, activemembers-membase as delta, division, area FROM clubperf where (monthstart='{0}-08-01' or monthstart='{0}-09-01') and activemembers-membase>=5 and entrytype='L' ORDER BY division, area".format(today.year))
+
     final = False
 
 status = "final" if final else "updated daily"
