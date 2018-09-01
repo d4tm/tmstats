@@ -53,7 +53,7 @@ outfile = parms.outfile
 #   daily data.
 
 #start with monthly data (entrytype=M)
-curs.execute("SELECT clubnumber, clubname, asof, activemembers-membase as delta, division, area FROM clubperf where (monthstart='{0}-08-01' or monthstart='{0}-09-01') and activemembers-membase>=5 and entrytype='M' ORDER BY division, area".format(today.year))
+curs.execute("SELECT clubnumber, clubname, asof, activemembers-membase as delta, division, area FROM clubperf where monthstart='{0}-09-01' and activemembers-membase>=5 and entrytype='M' ORDER BY division, area".format(today.year))
 
 if curs.rowcount:
     final = True
