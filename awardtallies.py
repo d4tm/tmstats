@@ -97,12 +97,6 @@ if __name__ == "__main__":
     level4WhereQuery=level4WhereQuery.rstrip(',')
     level5WhereQuery=level5WhereQuery.rstrip(',')
 
-    print level1WhereQuery
-    print level2WhereQuery
-    print level3WhereQuery
-    print level4WhereQuery
-    print level5WhereQuery
-
     parms.pathwaysfile.write("Pathways Level,Achieved\n")
     curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level1WhereQuery)) 
     parms.pathwaysfile.write('Pathways Level 1,%d\n'% curs.fetchone()[0])
