@@ -2,8 +2,8 @@
 
 # Create the "awards by division" and "awards by type" CSVs
 
-import dbconn, tmutil, sys, os, datetime
-
+import dbconn, tmutil, sys, os, datetime,awardinfo
+from awardinfo import Awardinfo
 
 def inform(*args, **kwargs):
     """ Print information to 'file' unless suppressed by the -quiet option.
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     # Handle parameters
     parms = tmparms.tmparms()
     parms.add_argument('--quiet', '-q', action='count')
+    parms.add_argument('--pathwaysfile', default='awardsbyPathwayslevels.csv', dest='pathwaysfile', type=argparse.FileType('w'), help="CSV file: awards by Pathways Levels")
     parms.add_argument('--divfile', default='awardsbydivision.csv', dest='divfile', type=argparse.FileType('w'), help="CSV file: awards by division")
     parms.add_argument('--typefile', default='awardsbytype.csv', dest='typefile', type=argparse.FileType('w'), help="CSV file: awards by type")
     parms.add_argument('--tmyear', default=None, dest='tmyear', type=int, help='TM Year (current if omitted)')
@@ -72,4 +73,48 @@ if __name__ == "__main__":
     parms.typefile.write('Distinguished Toastmaster,%d\n'% curs.fetchone()[0])
     parms.typefile.close()    
     
-    # And that's it.
+    #Now do pathways levels:
+    level1WhereQuery=''
+    level2WhereQuery=''
+    level3WhereQuery=''
+    level4WhereQuery=''
+    level5WhereQuery=''
+    for p in Awardinfo.paths:
+	if p[2]=='1':
+		level1WhereQuery+="'"+p+"',"
+	elif p[2]=='2':
+		level2WhereQuery+="'"+p+"',"
+	elif p[2]=='3':
+		level3WhereQuery+="'"+p+"',"
+	elif p[2]=='4':
+		level4WhereQuery+="'"+p+"',"
+	elif p[2]=='5':
+		level5WhereQuery+="'"+p+"',"
+
+    level1WhereQuery=level1WhereQuery.rstrip(',')
+    level2WhereQuery=level2WhereQuery.rstrip(',')
+    level3WhereQuery=level3WhereQuery.rstrip(',')
+    level4WhereQuery=level4WhereQuery.rstrip(',')
+    level5WhereQuery=level5WhereQuery.rstrip(',')
+
+    print level1WhereQuery
+    print level2WhereQuery
+    print level3WhereQuery
+    print level4WhereQuery
+    print level5WhereQuery
+
+    parms.pathwaysfile.write("Pathways Level,Achieved\n")
+    curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level1WhereQuery)) 
+    parms.pathwaysfile.write('Pathways Level 1,%d\n'% curs.fetchone()[0])
+
+    curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level2WhereQuery)) 
+    parms.pathwaysfile.write('Pathways Level 2,%d\n'% curs.fetchone()[0])
+
+    curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level3WhereQuery)) 
+    parms.pathwaysfile.write('Pathways Level 3,%d\n'% curs.fetchone()[0])
+
+    curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level4WhereQuery)) 
+    parms.pathwaysfile.write('Pathways Level 4,%d\n'% curs.fetchone()[0])
+
+    curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level5WhereQuery)) 
+    parms.pathwaysfile.write('Pathways Level 5,%d\n'% curs.fetchone()[0])
