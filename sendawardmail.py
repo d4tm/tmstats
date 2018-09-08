@@ -276,8 +276,11 @@ if __name__ == "__main__":
             report.append(award)
             letterinfo.append(award)    
 
-        sendletter(email, firstname, letterinfo, parms)
-        # And mark this one as acknowledged
+	#at request of Ken Cawley sept 4 2018 (see email) this has been disabled for now (mailing members on award achievement)
+        
+	#sendletter(email, firstname, letterinfo, parms)
+        
+	# And mark this one as acknowledged
         for l in letterinfo:
             curs.execute('UPDATE awards SET acknowledged = 1 WHERE id = %s', (l.id,))
         conn.commit()
