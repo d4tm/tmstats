@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Handle parameters
     parms = tmparms.tmparms()
     parms.add_argument('--quiet', '-q', action='count')
-    parms.add_argument('--pathwaysfile', default='awardsbyPathwayslevels.csv', dest='pathwaysfile', type=argparse.FileType('w'), help="CSV file: awards by Pathways Levels")
+    parms.add_argument('--pathwaysfile', default='pathways.csv', dest='pathwaysfile', type=argparse.FileType('w'), help="CSV file: awards by Pathways Levels")
     parms.add_argument('--divfile', default='awardsbydivision.csv', dest='divfile', type=argparse.FileType('w'), help="CSV file: awards by division")
     parms.add_argument('--typefile', default='awardsbytype.csv', dest='typefile', type=argparse.FileType('w'), help="CSV file: awards by type")
     parms.add_argument('--tmyear', default=None, dest='tmyear', type=int, help='TM Year (current if omitted)')
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     level4WhereQuery=level4WhereQuery.rstrip(',')
     level5WhereQuery=level5WhereQuery.rstrip(',')
 
-    parms.pathwaysfile.write("Pathways Level,Achieved\n")
+    parms.pathwaysfile.write("Pathways,Awards\n")
     curs.execute("SELECT COUNT(*) FROM awards WHERE tmyear = {0} AND award in ({1})".format(tmyear,level1WhereQuery)) 
     parms.pathwaysfile.write('Pathways Level 1,%d\n'% curs.fetchone()[0])
 
