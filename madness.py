@@ -32,7 +32,7 @@ if __name__ == "__main__":
     
     # Define args and parse command line
     parms = tmparms.tmparms(description=__doc__)
-    parms.add_argument('--finaldate', default='3/15', dest='finaldate', help="Final date for qualifying.")
+    parms.add_argument('--finaldate', default='3/17', dest='finaldate', help="Final date for qualifying.")
     parms.add_argument('--outfile', default='madness.html', dest='outfile', type=argparse.FileType('w'), help="Output file.")
     parms.parse()
     finaldate = cleandate(parms.finaldate)
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # And write the report.
         
     parms.outfile.write('<h3 id="madness">March Madness</h3>\n')
-    parms.outfile.write('<p>Clubs renewing at least 75% of their base membership by March 15 receive $50 in District Credit.\n')
+    parms.outfile.write('<p>Clubs renewing at least 75% of their base membership by March 17 receive $50 in District Credit.\n')
     parms.outfile.write('This report is %s.</p>\n' % asofnice)
     showclubswithvalues(clubs, 'Renewed', parms.outfile)
     
