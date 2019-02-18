@@ -45,7 +45,6 @@ if __name__ == "__main__":
     # Anchor the final date to the proper TM year
     curs.execute("SELECT MAX(tmyear) FROM lastfor")
     tmyear = curs.fetchone()[0] 
-    #tmyear =2019
     finaldate = '%d%s' % (tmyear+1,finaldate[4:])
     asof = min(finaldate, mostrecent)
     asofd = datetime.strptime(asof, "%Y-%m-%d")
@@ -66,8 +65,6 @@ if __name__ == "__main__":
 
     clubs = []
     curs.execute("SELECT d.clubnumber, d.clubname,  100.0 * (d.aprrenewals / c.membase) as pct, d.division, d.area   from clubperf c  inner join distperf d on c.clubnumber = d.clubnumber and c.asof = %s and d.asof = %s having pct >= 75", (firstdate, asof))
-    print firstdate
-    print asof
     for c in curs.fetchall():
         clubs.append(myclub(*c))
 
