@@ -18,7 +18,8 @@ class Awardinfo:
                           'Presentation Mastery',
                           'Strategic Relationships',
                           'Team Collaboration',
-                          'Visionary Communication'}
+                          'Visionary Communication'
+                          'Engaging Humor'}
                          
                          
         # (new format of pathways awards):The names of the awards for paths are derived from the path name:
