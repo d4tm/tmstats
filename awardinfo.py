@@ -18,7 +18,7 @@ class Awardinfo:
                           'Presentation Mastery',
                           'Strategic Relationships',
                           'Team Collaboration',
-                          'Visionary Communication'
+                          'Visionary Communication',
                           'Engaging Humor'}
                          
                          
