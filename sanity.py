@@ -32,7 +32,7 @@ if __name__ == "__main__":
     
     # Define args and parse command line
     parms = tmparms.tmparms(description=__doc__)
-    parms.add_argument('--finaldate', default='9/15', dest='finaldate', help="Final date for qualifying.")
+    parms.add_argument('--finaldate', default='9/17', dest='finaldate', help="Final date for qualifying.")
     parms.add_argument('--outfile', default='sanity.html', dest='outfile', type=argparse.FileType('w'), help="Output file.")
     parms.parse()
     finaldate = cleandate(parms.finaldate)
