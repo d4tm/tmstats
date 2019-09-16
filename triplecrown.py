@@ -21,7 +21,7 @@ def inform(*args, **kwargs):
 
 winners = {}
 class Winner:
-    awards = ['CC', 'ACB', 'ACL', 'ACS', 'ACG', 'CL', 'ALB', 'ALS', 'DTM']
+    awards = ['CC', 'ACB', 'ACL', 'ACS', 'ACG', 'CL', 'ALB', 'ALS', 'DTM', 'DL?', 'EC?', 'IP?', 'LD?', 'MS?', 'PI?', 'PM?', 'SR?', 'TC?', 'VC?']
     
     @classmethod
     def add(self, name, award):
