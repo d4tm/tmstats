@@ -70,6 +70,6 @@ for c in curs.fetchall():
     clubs.append(myclub(*c))
 
 thisYear='%s' % str(today.year+1)
-title = '<h4>Lucky 7 - Round 2 (November-February %s)</h4>\n' % thisYear.rstrip()
+title = '<h4>Lucky 7 - Round 2 (November - February %s)</h4>\n' % thisYear.rstrip()
 outfile2.write(title)
 showclubswithoutvalues(clubs, outfile2)
